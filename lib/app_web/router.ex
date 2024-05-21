@@ -20,5 +20,6 @@ defmodule AppWeb.Router do
     get "/", PageController, :home
 
     live "/examples/1", Example1Live
+    live "/examples/2", Example2Live
   end
 end
