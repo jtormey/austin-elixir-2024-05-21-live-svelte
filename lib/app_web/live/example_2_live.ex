@@ -1,37 +1,49 @@
 defmodule AppWeb.Example2Live do
   use AppWeb, :live_view
 
-  alias App.CanvasServer
-
   def render(assigns) do
-    ~H"""
-    <.header class="mb-10">
-      Example 2
-      <:subtitle>Whiteboard with Cursor</:subtitle>
-    </.header>
+    ~V"""
+    <script lang="ts">
+      import { Live } from "live_svelte";
+      import Button from "../../../assets/svelte/CoreComponents/Button.svelte";
 
-    <.svelte name="Example2" props={%{path: @path}} socket={@socket} />
+      export let number: number;
+      export let live: Live;
+
+      let local: number = 0;
+    </script>
+
+    <div class="space-y-4">
+      <div>
+        Local count is: {local}
+      </div>
+
+      <div>
+        <Button on:click={() => local++}>Increment</Button>
+        <Button on:click={() => local--}>Decrement</Button>
+      </div>
+
+      <div>
+        Remote count is: {number}
+      </div>
+
+      <div>
+        <Button on:click={() => live.pushEvent("inc")}>Increment</Button>
+        <Button on:click={() => live.pushEvent("dec")}>Decrement</Button>
+      </div>
+    </div>
     """
   end
 
   def mount(_params, _session, socket) do
-    if connected?(socket) do
-      CanvasServer.subscribe()
-    end
-
-    {:ok, assign(socket, :path, CanvasServer.get_canvas())}
+    {:ok, assign(socket, :number, 0)}
   end
 
-  def handle_event("add_point", point, socket) do
-    CanvasServer.draw(point)
-    {:noreply, socket}
+  def handle_event("inc", _params, socket) do
+    {:noreply, update(socket, :number, &(&1 + 1))}
   end
 
-  def handle_info({:canvas_op, pid, :add_point, point}, socket) do
-    if pid == self() do
-      {:noreply, socket}
-    else
-      {:noreply, push_event(socket, "add_point", %{point: point})}
-    end
+  def handle_event("dec", _params, socket) do
+    {:noreply, update(socket, :number, &(&1 - 1))}
   end
 end
