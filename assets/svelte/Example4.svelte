@@ -111,7 +111,7 @@
   />
   <span
     bind:this={own}
-    class="hero-arrow-up-left-mini h-5 w-5 absolute"
+    class="hero-arrow-up-left h-5 w-5 absolute"
     class:hidden={!inFrame}
   />
 </div>

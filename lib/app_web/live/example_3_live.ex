@@ -9,10 +9,10 @@ defmodule AppWeb.Example3Live do
     </.header>
 
     <div class="mb-4 flex gap-2">
-      <.link_button navigate={~p"/examples/3"}>No delay</.link_button>
-      <.link_button navigate={~p"/examples/3?delay=1000"}>Delay 1s</.link_button>
-      <.link_button navigate={~p"/examples/3?delay=3000"}>Delay 3s</.link_button>
-      <.link_button navigate={~p"/examples/3?delay=5000"}>Delay 5s</.link_button>
+      <.link_button href={~p"/examples/3"}>No delay</.link_button>
+      <.link_button href={~p"/examples/3?delay=1000"}>Delay 1s</.link_button>
+      <.link_button href={~p"/examples/3?delay=3000"}>Delay 3s</.link_button>
+      <.link_button href={~p"/examples/3?delay=5000"}>Delay 5s</.link_button>
     </div>
 
     <.svelte name="Example3" props={%{connected: @connected}} socket={@socket} />
@@ -20,8 +20,10 @@ defmodule AppWeb.Example3Live do
   end
 
   def mount(params, _session, socket) do
-    if delay = params["delay"] do
-      Process.sleep(String.to_integer(delay))
+    if connected?(socket) do
+      if delay = params["delay"] do
+        Process.sleep(String.to_integer(delay))
+      end
     end
 
     {:ok, assign(socket, :connected, connected?(socket))}
