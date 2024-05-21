@@ -6,12 +6,18 @@ defmodule AppWeb.Example2Live do
     <script lang="ts">
       import { Live } from "live_svelte";
       import Button from "../../../assets/svelte/CoreComponents/Button.svelte";
+      import Header from "../../../assets/svelte/CoreComponents/Header.svelte";
 
       export let number: number;
       export let live: Live;
 
       let local: number = 0;
     </script>
+
+    <Header className="mb-10">
+      Example 2
+      <span slot="subtitle">Write Svelte in LiveView.</span>
+    </Header>
 
     <div class="space-y-4">
       <div>

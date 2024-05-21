@@ -5,7 +5,7 @@ defmodule AppWeb.Example1Live do
     ~H"""
     <.header class="mb-10">
       Example 1
-      <:subtitle>Local & Remote Counters</:subtitle>
+      <:subtitle>Client & Server State.</:subtitle>
     </.header>
 
     <.svelte name="Example1" props={%{number: @number}} socket={@socket} />

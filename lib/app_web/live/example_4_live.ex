@@ -7,7 +7,7 @@ defmodule AppWeb.Example4Live do
     ~H"""
     <.header class="mb-10">
       Example 4
-      <:subtitle>Whiteboard with Cursor</:subtitle>
+      <:subtitle>Relaying Client Events.</:subtitle>
     </.header>
 
     <.svelte name="Example4" props={%{path: @path}} socket={@socket} />

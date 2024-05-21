@@ -5,7 +5,7 @@ defmodule AppWeb.Example3Live do
     ~H"""
     <.header class="mb-10">
       Example 3
-      <:subtitle>Rendering on the Server</:subtitle>
+      <:subtitle>Server Rendering.</:subtitle>
     </.header>
 
     <div class="mb-4 flex gap-2">
