@@ -21,5 +21,6 @@ defmodule AppWeb.Router do
 
     live "/examples/1", Example1Live
     live "/examples/2", Example2Live
+    live "/examples/3", Example3Live
   end
 end
