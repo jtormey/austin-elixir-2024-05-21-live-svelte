@@ -87,6 +87,8 @@ defmodule AppWeb do
       import AppWeb.CoreComponents
       import AppWeb.Gettext
 
+      import LiveSvelte
+
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
 
