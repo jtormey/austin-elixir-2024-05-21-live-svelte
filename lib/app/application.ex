@@ -16,6 +16,7 @@ defmodule App.Application do
       # Start a worker by calling: App.Worker.start_link(arg)
       # {App.Worker, arg},
       # Start to serve requests, typically the last entry
+      {App.CanvasServer, canvas_size: {10000, 10000}},
       AppWeb.Endpoint
     ]
 

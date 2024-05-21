@@ -1,7 +1,35 @@
 <script lang="ts">
+  import { Live } from "live_svelte";
+  import { onMount } from "svelte";
+  import Button from "./CoreComponents/Button.svelte";
+
+  type Point = [number, number, string];
+
+  export let live: Live;
+  export let path: Array<Point>;
+
   let own: HTMLElement;
   let container: HTMLElement;
+  let canvas: HTMLCanvasElement;
   let inFrame = false;
+  let drawing = false;
+  let inputDelay = false;
+
+  let color = "#000000";
+
+  onMount(() => {
+    live.handleEvent("add_point", (data) => {
+      drawPoint(canvas.getContext("2d"), data.point);
+    });
+
+    requestAnimationFrame(() => {
+      const ctx = canvas.getContext("2d");
+
+      for (let i = 0; i < path.length; i++) {
+        drawPoint(ctx, path[i]);
+      }
+    });
+  });
 
   function handleMouseEnter() {
     inFrame = true;
@@ -11,12 +39,48 @@
     inFrame = false;
   }
 
+  function handleMouseDown() {
+    drawing = true;
+  }
+
+  function handleMouseUp() {
+    drawing = false;
+  }
+
   function handleMouseMove(event: MouseEvent) {
     const rect = container.getBoundingClientRect();
-    own.style.top = `${event.clientY - rect.top}px`;
-    own.style.left = `${event.clientX - rect.left}px`;
+
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    own.style.left = `${x}px`;
+    own.style.top = `${y}px`;
+
+    if (drawing) {
+      const p: Point = [x, y, color];
+
+      drawPoint(canvas.getContext("2d"), p);
+
+      setTimeout(
+        () => {
+          live.pushEvent("add_point", p);
+        },
+        inputDelay ? 1000 : 0,
+      );
+    }
+  }
+
+  function drawPoint(ctx: CanvasRenderingContext2D, point: Point) {
+    ctx.fillStyle = point[2];
+    ctx.fillRect(point[0], point[1], 1, 1);
   }
 </script>
+
+<div class="mb-4">
+  <Button on:click={() => (inputDelay = !inputDelay)}>
+    Turn input delay {inputDelay ? "off" : "on"}
+  </Button>
+</div>
 
 <div
   bind:this={container}
@@ -24,8 +88,15 @@
   class="relative w-full h-96 cursor-none bg-zinc-50 overflow-hidden"
   on:mouseenter={handleMouseEnter}
   on:mouseleave={handleMouseLeave}
+  on:mousedown={handleMouseDown}
+  on:mouseup={handleMouseUp}
   on:mousemove={handleMouseMove}
 >
+  <canvas
+    bind:this={canvas}
+    width={container?.getBoundingClientRect().width}
+    height={container?.getBoundingClientRect().height}
+  />
   <span
     bind:this={own}
     class="hero-arrow-up-left-mini h-5 w-5 absolute"
