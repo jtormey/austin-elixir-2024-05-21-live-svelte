@@ -41,7 +41,8 @@ defmodule App.CanvasServer do
     {:reply, Enum.reverse(state.canvas), state}
   end
 
-  def handle_call(:clear_canvas, _from, state) do
+  def handle_call(:clear_canvas, {pid, _ref}, state) do
+    Phoenix.PubSub.broadcast(App.PubSub, "canvas", {:canvas_op, pid, :clear_canvas})
     {:reply, :ok, %{state | canvas: []}}
   end
 

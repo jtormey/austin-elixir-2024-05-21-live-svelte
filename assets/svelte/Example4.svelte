@@ -22,6 +22,10 @@
       drawPoint(canvas.getContext("2d"), data.point);
     });
 
+    live.handleEvent("clear_canvas", (data) => {
+      clearCanvas(canvas.getContext("2d"));
+    });
+
     requestAnimationFrame(() => {
       const ctx = canvas.getContext("2d");
 
@@ -30,6 +34,10 @@
       }
     });
   });
+
+  function withDelay(f: () => any) {
+    setTimeout(f, inputDelay ? 1000 : 0);
+  }
 
   function handleMouseEnter() {
     inFrame = true;
@@ -60,26 +68,30 @@
       const p: Point = [x, y, color];
 
       drawPoint(canvas.getContext("2d"), p);
-
-      setTimeout(
-        () => {
-          live.pushEvent("add_point", p);
-        },
-        inputDelay ? 1000 : 0,
-      );
+      withDelay(() => live.pushEvent("add_point", p));
     }
+  }
+
+  function handleClickClearCanvas() {
+    clearCanvas(canvas.getContext("2d"));
+    withDelay(() => live.pushEvent("clear_canvas"));
   }
 
   function drawPoint(ctx: CanvasRenderingContext2D, point: Point) {
     ctx.fillStyle = point[2];
     ctx.fillRect(point[0], point[1], 1, 1);
   }
+
+  function clearCanvas(ctx: CanvasRenderingContext2D) {
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  }
 </script>
 
-<div class="mb-4">
+<div class="mb-4 flex gap-2">
   <Button on:click={() => (inputDelay = !inputDelay)}>
     Turn input delay {inputDelay ? "off" : "on"}
   </Button>
+  <Button on:click={handleClickClearCanvas}>Clear</Button>
 </div>
 
 <div
